@@ -46,7 +46,6 @@ class _EditNotePageState extends State<EditNotePage> {
                   id: data['id'].toString(),
                   data: data,
                 );
-
                 print("==================================");
                 print(data);
                 print("==================================");
