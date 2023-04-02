@@ -16,13 +16,13 @@ class _EditNotePageState extends State<EditNotePage> {
 
   final GlobalKey<FormState> editKey = GlobalKey<FormState>();
 
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController subTitleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
-    Map data = ModalRoute.of(context)!.settings.arguments as Map;
+    Map<Object, Object> data = ModalRoute
+        .of(context)!
+        .settings
+        .arguments as Map<Object, Object>;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -42,22 +42,24 @@ class _EditNotePageState extends State<EditNotePage> {
               if (editKey.currentState!.validate()) {
                 editKey.currentState!.save();
 
-                await FireStoreHelper.fireStoreHelper.addNotes(
-                  title: title!,
-                  subtitle: subtitle!,
+                await FireStoreHelper.fireStoreHelper.editNotes(
+                  id: data['id'].toString(),
+                  data: data,
                 );
+
+                print("==================================");
+                print(data);
+                print("==================================");
+
                 Navigator.of(context).pop();
 
-                titleController.clear();
-                subTitleController.clear();
-
-                setState(() {
-                  title = null;
-                  subtitle = null;
-                });
+                // setState(() {
+                //   title = null;
+                //   subtitle = null;
+                // });
               }
             },
-            icon: Icon(Icons.done),
+            icon: const Icon(Icons.done, color: Colors.white,),
           )
         ],
         backgroundColor: const Color(0xff03111C),
@@ -77,7 +79,6 @@ class _EditNotePageState extends State<EditNotePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
-                controller: titleController,
                 onSaved: (val) {
                   title = val;
                 },
@@ -86,7 +87,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   color: Colors.white,
                   fontFamily: "Poppins",
                 ),
-                initialValue: data['title'],
+                initialValue: data['title'].toString(),
                 textInputAction: TextInputAction.next,
                 cursorColor: Colors.white,
                 decoration: const InputDecoration(
@@ -101,7 +102,6 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
               ),
               TextFormField(
-                controller: subTitleController,
                 validator: (val) {
                   if (val!.isEmpty) {
                     return "please enter notes";
@@ -114,6 +114,7 @@ class _EditNotePageState extends State<EditNotePage> {
                   fontSize: 20,
                   color: Colors.white,
                 ),
+                initialValue: data['subtitle'].toString(),
                 cursorColor: Colors.white,
                 maxLines: null,
                 // expands: true,

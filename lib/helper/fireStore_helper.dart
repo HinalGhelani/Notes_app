@@ -49,7 +49,7 @@ class FireStoreHelper {
         .doc(id)
         .update(data)
         .then((value) => print("Notes Edit"))
-        .catchError((error) => print(error));
+        .catchError((error) => print("====================\n$error\n======================"),);
   }
 
   Stream<QuerySnapshot<Object?>> getNotes() {

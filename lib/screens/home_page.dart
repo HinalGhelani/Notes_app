@@ -11,7 +11,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   List data = [];
-
   Map<Object, Object> editValue = {};
 
   String? title;
@@ -46,9 +45,51 @@ class _MyAppState extends State<MyApp> {
           ),
           IconButton(
             onPressed: () async {
-              await FirebaseAuthHelper.firebaseAuthHelper.logOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil('welcomePage', (route) => false);
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: const Text(
+                        "Are You Sure Logout??",
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Color(0xff03111C),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "No",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Color(0xff03111C),
+                            ),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await FirebaseAuthHelper.firebaseAuthHelper
+                                .logOut();
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                'welcomePage', (route) => false);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xff03111C)),
+                          child: const Text(
+                            "Yes",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  });
             },
             icon: const Icon(
               Icons.power_settings_new,
@@ -93,7 +134,7 @@ class _MyAppState extends State<MyApp> {
                 itemCount: data.length,
                 itemBuilder: (context, i) {
                   print("==================================");
-                  print(data[i]['title']);
+
                   print("==================================");
 
                   return Column(
@@ -101,87 +142,70 @@ class _MyAppState extends State<MyApp> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          Map<Object, Object> editValue = {
+                            'title': data[i]['title'],
+                            'subtitle': data[i]['subtitle']
+                          };
                           setState(() {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return Center(
-                                    child: Container(
-                                      height: 130,
-                                      width: 250,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xff03111C),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-                                              Map<Object, Object> editValue = {
-                                                'title': data[i]['title'],
-                                                'subtitle': data[i]['subtitle']
-                                              };
-                                              Navigator.of(context)
-                                                  .pushNamed('editNotePage',arguments: editValue);
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(10),
-                                              margin:
-                                                  const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey.shade500,
-                                                ),
-                                              ),
-                                              child: const Text(
-                                                "Edit",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          GestureDetector(
-                                            onTap: () {
-                                              setState(() {});
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(10),
-                                              margin:
-                                                  const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                  width: 1,
-                                                  color: Colors.grey.shade500,
-                                                ),
-                                              ),
-                                              child: const Text(
-                                                "Delete",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                            Navigator.of(context).pushNamed('editNotePage',
+                                arguments: editValue);
+                          });
+                        },
+                        onLongPress: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text(
+                                    "Are You Sure?",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xff03111C),
+                                    ),
+                                  ),
+                                  content: Text(
+                                    "You Are About Delete This Note.",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text(
+                                        "No",
+                                        style: TextStyle(
+                                            color: Color(0xff03111C),
+                                            fontSize: 15),
                                       ),
                                     ),
-                                  );
-                                });
-                          });
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        FireStoreHelper.fireStoreHelper
+                                            .removeNotes(id: data[i]['id']);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            const Color(0xff03111C),
+                                      ),
+                                      child: const Text(
+                                        "Yes",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                  backgroundColor: Colors.white,
+                                );
+                              });
                         },
                         child: Ink(
                           child: Container(
@@ -200,11 +224,14 @@ class _MyAppState extends State<MyApp> {
                               children: [
                                 Text(
                                   data[i]['title'],
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15),
                                 ),
                                 Text(
                                   data[i]['subtitle'],
-                                  style: const TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Colors.grey.shade500),
                                 ),
                               ],
                             ),

@@ -52,7 +52,7 @@ class _addNotePageState extends State<addNotePage> {
                 });
               }
             },
-            icon: Icon(Icons.done),
+            icon: const Icon(Icons.done),
           )
         ],
         backgroundColor: const Color(0xff03111C),
