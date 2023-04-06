@@ -14,7 +14,10 @@ class FireStoreHelper {
   }
 
   Future<void> addNotes(
-      {required String title, required String subtitle}) async {
+      {required String title,
+      required String subtitle,
+      required String date,
+      required String time}) async {
     connectCollection();
 
     String nId = DateTime.now().millisecondsSinceEpoch.toString();
@@ -25,6 +28,8 @@ class FireStoreHelper {
           'id': nId,
           'title': title,
           'subtitle': subtitle,
+          'time': time,
+          'date': date,
         })
         .then(
           (value) => print("Notes is add...."),
@@ -49,7 +54,10 @@ class FireStoreHelper {
         .doc(id)
         .update(data)
         .then((value) => print("Notes Edit"))
-        .catchError((error) => print("====================\n$error\n======================"),);
+        .catchError(
+          (error) =>
+              print("====================\n$error\n======================"),
+        );
   }
 
   Stream<QuerySnapshot<Object?>> getNotes() {

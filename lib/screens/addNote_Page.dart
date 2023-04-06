@@ -9,6 +9,12 @@ class addNotePage extends StatefulWidget {
 }
 
 class _addNotePageState extends State<addNotePage> {
+  DateTime date = DateTime.now();
+  DateTime time = DateTime.now();
+
+  String currentDate = "";
+  String currentTime = "";
+
   String? title;
   String? subtitle;
 
@@ -38,9 +44,12 @@ class _addNotePageState extends State<addNotePage> {
                 notesKey.currentState!.save();
 
                 await FireStoreHelper.fireStoreHelper.addNotes(
-                  title: title!,
-                  subtitle: subtitle!,
-                );
+                    title: title!,
+                    subtitle: subtitle!,
+                    date: currentDate,
+                    time: currentTime);
+                b = true;
+
                 Navigator.of(context).pop();
 
                 titleController.clear();
@@ -52,7 +61,10 @@ class _addNotePageState extends State<addNotePage> {
                 });
               }
             },
-            icon: const Icon(Icons.done),
+            icon: const Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
           )
         ],
         backgroundColor: const Color(0xff03111C),
@@ -66,7 +78,33 @@ class _addNotePageState extends State<addNotePage> {
           key: notesKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  Text(
+                    currentDate = "${date.day}/${date.month}/${date.year}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Text(
+                    " - ",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    currentTime = "${date.hour} : ${date.minute}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
               TextFormField(
                 controller: titleController,
                 onSaved: (val) {
@@ -127,3 +165,5 @@ class _addNotePageState extends State<addNotePage> {
     );
   }
 }
+
+bool b = false;

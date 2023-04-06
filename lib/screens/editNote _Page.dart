@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,15 +15,14 @@ class _EditNotePageState extends State<EditNotePage> {
   String? title;
   String? subtitle;
 
-  final GlobalKey<FormState> editKey = GlobalKey<FormState>();
+  Map<Object, Object> newData = {};
 
+  final GlobalKey<FormState> editKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    Map<Object, Object> data = ModalRoute
-        .of(context)!
-        .settings
-        .arguments as Map<Object, Object>;
+    QueryDocumentSnapshot data =
+        ModalRoute.of(context)!.settings.arguments as QueryDocumentSnapshot;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -44,7 +44,7 @@ class _EditNotePageState extends State<EditNotePage> {
 
                 await FireStoreHelper.fireStoreHelper.editNotes(
                   id: data['id'].toString(),
-                  data: data,
+                  data: newData,
                 );
                 print("==================================");
                 print(data);
@@ -58,7 +58,10 @@ class _EditNotePageState extends State<EditNotePage> {
                 // });
               }
             },
-            icon: const Icon(Icons.done, color: Colors.white,),
+            icon: const Icon(
+              Icons.done,
+              color: Colors.white,
+            ),
           )
         ],
         backgroundColor: const Color(0xff03111C),
@@ -78,15 +81,15 @@ class _EditNotePageState extends State<EditNotePage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
-                onSaved: (val) {
-                  title = val;
+                onChanged: (val) {
+                  newData['title'] = val;
                 },
                 style: const TextStyle(
                   fontSize: 25,
                   color: Colors.white,
                   fontFamily: "Poppins",
                 ),
-                initialValue: data['title'].toString(),
+                initialValue: data['title'],
                 textInputAction: TextInputAction.next,
                 cursorColor: Colors.white,
                 decoration: const InputDecoration(
@@ -106,14 +109,14 @@ class _EditNotePageState extends State<EditNotePage> {
                     return "please enter notes";
                   }
                 },
-                onSaved: (val) {
-                  subtitle = val;
+                onChanged: (val) {
+                  newData['subtitle'] = val;
                 },
                 style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                 ),
-                initialValue: data['subtitle'].toString(),
+                initialValue: data['subtitle'],
                 cursorColor: Colors.white,
                 maxLines: null,
                 // expands: true,

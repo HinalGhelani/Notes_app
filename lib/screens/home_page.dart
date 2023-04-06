@@ -99,156 +99,163 @@ class _MyAppState extends State<MyApp> {
         ],
       ),
       body: Center(
-        child:
-            // (data.isEmpty)
-            //     ? Column(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: [
-            //           Image.network(
-            //             "https://cdn-icons-png.flaticon.com/512/3131/3131636.png",
-            //             height: 150,
-            //           ),
-            //           const SizedBox(height: 20),
-            //           const Text(
-            //             "Create Your first Note !!",
-            //             style: TextStyle(
-            //               fontSize: 20,
-            //               color: Colors.white,
-            //               fontFamily: "Poppins",
-            //             ),
-            //           ),
-            //         ],
-            //       )
-            //     :
-            StreamBuilder(
-          stream: FireStoreHelper.fireStoreHelper.getNotes(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("Error :- ${snapshot.error} "),
-              );
-            } else if (snapshot.hasData) {
-              data = snapshot.data!.docs;
+          child: StreamBuilder(
+        stream: FireStoreHelper.fireStoreHelper.getNotes(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("Error :- ${snapshot.error} "),
+            );
+          } else if (snapshot.hasData) {
+            data = snapshot.data!.docs;
 
-              return ListView.builder(
-                itemCount: data.length,
-                itemBuilder: (context, i) {
-                  print("==================================");
+            return ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: data.length,
+              itemBuilder: (context, i) {
+                print("=======================================");
 
-                  print("==================================");
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Map<Object, Object> editValue = {
-                            'title': data[i]['title'],
-                            'subtitle': data[i]['subtitle']
-                          };
-                          setState(() {
-                            Navigator.of(context).pushNamed('editNotePage',
-                                arguments: editValue);
-                          });
-                        },
-                        onLongPress: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text(
-                                    "Are You Sure?",
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xff03111C),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          Navigator.of(context)
+                              .pushNamed('editNotePage', arguments: data[i]);
+                        });
+                      },
+                      onLongPress: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Are You Sure?",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xff03111C),
+                                  ),
+                                ),
+                                content: Text(
+                                  "You Are About Delete This Note.",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      "No",
+                                      style: TextStyle(
+                                          color: Color(0xff03111C),
+                                          fontSize: 15),
                                     ),
                                   ),
-                                  content: Text(
-                                    "You Are About Delete This Note.",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey.shade700,
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      FireStoreHelper.fireStoreHelper
+                                          .removeNotes(id: data[i]['id']);
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xff03111C),
                                     ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text(
-                                        "No",
-                                        style: TextStyle(
-                                            color: Color(0xff03111C),
-                                            fontSize: 15),
+                                    child: const Text(
+                                      "Yes",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
                                       ),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        FireStoreHelper.fireStoreHelper
-                                            .removeNotes(id: data[i]['id']);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            const Color(0xff03111C),
-                                      ),
-                                      child: const Text(
-                                        "Yes",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                  backgroundColor: Colors.white,
-                                );
-                              });
-                        },
-                        child: Ink(
-                          child: Container(
-                            padding: const EdgeInsets.all(15),
-                            margin: const EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: Colors.grey.shade500,
-                                width: 1,
+                                  )
+                                ],
+                                backgroundColor: Colors.white,
+                              );
+                            });
+                      },
+                      child: Ink(
+                        child: Container(
+                          padding: const EdgeInsets.all(15),
+                          margin: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade500,
+                              width: 1,
+                            ),
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data[i]['title'],
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15),
                               ),
-                            ),
-                            alignment: Alignment.topLeft,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  data[i]['title'],
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 15),
-                                ),
-                                Text(
-                                  data[i]['subtitle'],
-                                  style: TextStyle(color: Colors.grey.shade500),
-                                ),
-                              ],
-                            ),
+                              Text(
+                                data[i]['subtitle'],
+                                style: TextStyle(color: Colors.grey.shade500),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    data[i]['date'],
+                                    style: TextStyle(color: Colors.grey.shade500),
+                                  ),
+                                  Text(
+                                    data[i]['time'],
+                                    style: TextStyle(color: Colors.grey.shade500),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  );
-                },
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
+                    ),
+                  ],
+                );
+              },
             );
-          },
-        ),
-      ),
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      )
+          // Column(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           Image.network(
+          //             "https://cdn-icons-png.flaticon.com/512/3131/3131636.png",
+          //             height: 150,
+          //           ),
+          //           const SizedBox(height: 20),
+          //           const Text(
+          //             "Create Your first Note !!",
+          //             style: TextStyle(
+          //               fontSize: 20,
+          //               color: Colors.white,
+          //               fontFamily: "Poppins",
+          //             ),
+          //           ),
+          //         ],
+          //       )
+          ),
       backgroundColor: const Color(0xff03111C),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
