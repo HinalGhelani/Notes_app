@@ -7,10 +7,14 @@ import 'package:firebase_notes/screens/logIn_page.dart';
 import 'package:firebase_notes/screens/signUp_page.dart';
 import 'package:firebase_notes/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
+
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -19,10 +23,10 @@ void main() {
       ),
       initialRoute: 'splashScreen',
       routes: {
-        '/': (context) => const MyApp(),
+        '/': (context) =>  const MyApp(),
         'addNotePage': (context) => const addNotePage(),
         'welcomePage': (context) => const WelcomePage(),
-        'logInPage': (context) => const SignInPage(),
+        'logInPage': (context) =>  const SignInPage(),
         'signUpPage': (context) => const SignUpPage(),
         'editNotePage': (context) => const EditNotePage(),
         'splashScreen': (context) => const spalshScreen(),

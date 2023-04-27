@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/notes_helper.dart';
 
 class SignInPage extends StatefulWidget {
+  // final SharedPreferences prefs;
   const SignInPage({Key? key}) : super(key: key);
 
   @override
@@ -18,6 +20,27 @@ class _SignInPageState extends State<SignInPage> {
   final GlobalKey<FormState> signInKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  // bool isLoggedIn = false;
+  // String sfLogin = '';
+
+  // checkLogin() {
+  //   isLoggedIn = widget.prefs.getBool(sfLogin) ?? false;
+  //   if(isLoggedIn){
+  //     Navigator.of(context).pushReplacementNamed('/');
+  //     widget.prefs.setBool(sfLogin, false);
+  //   }
+  // }
+  //
+  // login(){
+  //   widget.prefs.setBool(sfLogin, true);
+  // }
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   checkLogin();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +205,7 @@ class _SignInPageState extends State<SignInPage> {
                                           email: email!, password: password!);
 
                               if (res['user'] != null) {
+                                // login();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
@@ -196,7 +220,8 @@ class _SignInPageState extends State<SignInPage> {
                                 );
                                 Navigator.of(context).pushReplacementNamed('/',
                                     arguments: res['user']);
-                              } else if (res['error'] != null) {
+                              }
+                              else if (res['error'] != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(res['error']),
@@ -204,7 +229,8 @@ class _SignInPageState extends State<SignInPage> {
                                     backgroundColor: const Color(0xff03111C),
                                   ),
                                 );
-                              } else {
+                              }
+                              else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text("Signin in failed..."),
