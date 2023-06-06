@@ -9,11 +9,14 @@ import 'package:firebase_notes/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
 
-  SharedPreferences preferences = await SharedPreferences.getInstance();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  bool? splashVisit = prefs.getBool('splashVisit') ?? false;
+  bool? login = prefs.getBool('login') ?? false;
 
   runApp(
     MaterialApp(
@@ -21,12 +24,20 @@ void main() async{
       theme: ThemeData(
         useMaterial3: true,
       ),
-      initialRoute: 'splashScreen',
+      initialRoute:
+          // (splashVisit == false)
+          //     ? 'splashScreen'
+          //     : (login == false)
+          //         ? 'welcomePage'
+          //         : '/',
+          'splashScreen',
       routes: {
-        '/': (context) =>  const MyApp(),
+        '/': (context) => const MyApp(),
         'addNotePage': (context) => const addNotePage(),
-        'welcomePage': (context) => const WelcomePage(),
-        'logInPage': (context) =>  const SignInPage(),
+        'welcomePage': (context) => WelcomePage(
+              prefs: prefs,
+            ),
+        'logInPage': (context) => const SignInPage(),
         'signUpPage': (context) => const SignUpPage(),
         'editNotePage': (context) => const EditNotePage(),
         'splashScreen': (context) => const spalshScreen(),
@@ -43,13 +54,20 @@ class spalshScreen extends StatefulWidget {
 }
 
 class _spalshScreenState extends State<spalshScreen> {
+  Future<void> checkPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool done = prefs.getBool('welcome') ?? false;
+    Timer(
+      const Duration(seconds: 3),
+      () => Navigator.pushReplacementNamed(
+          context, (done == true) ? '/' : 'welcomePage'),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    Timer(
-      const Duration(seconds: 3),
-      () => Navigator.pushReplacementNamed(context, 'welcomePage'),
-    );
+    checkPrefs();
   }
 
   @override

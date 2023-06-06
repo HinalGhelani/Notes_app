@@ -1,14 +1,22 @@
 import 'package:firebase_notes/helper/notes_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  const WelcomePage({Key? key,prefs} ) : super(key: key);
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
 }
 
 class _WelcomePageState extends State<WelcomePage> {
+
+  welcomeVisit() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    await prefs.setBool('welcome', true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +54,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
+                    welcomeVisit();
                     Navigator.of(context).pushNamed('signUpPage');
                   },
                   child: Container(
@@ -86,6 +95,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           backgroundColor: Colors.white,
                         ),
                       );
+                      welcomeVisit();
                       Navigator.of(context).pushReplacementNamed('/');
                     } else if (res['error'] != null) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -140,32 +150,32 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 50,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: const Color(0xff03111C).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    children: [
-                      Image.network(
-                        "https://cdn3.iconfinder.com/data/icons/free-social-icons/67/facebook_circle_color-512.png",
-                        height: 35,
-                      ),
-                      const Text(
-                        "     Continue with Facebook",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xff03111C),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                // const SizedBox(height: 20),
+                // Container(
+                //   padding: const EdgeInsets.all(10),
+                //   height: 50,
+                //   width: double.infinity,
+                //   decoration: BoxDecoration(
+                //     color: const Color(0xff03111C).withOpacity(0.1),
+                //     borderRadius: BorderRadius.circular(12),
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       Image.network(
+                //         "https://cdn3.iconfinder.com/data/icons/free-social-icons/67/facebook_circle_color-512.png",
+                //         height: 35,
+                //       ),
+                //       const Text(
+                //         "     Continue with Facebook",
+                //         style: TextStyle(
+                //           fontSize: 15,
+                //           fontWeight: FontWeight.w600,
+                //           color: Color(0xff03111C),
+                //         ),
+                //       )
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
